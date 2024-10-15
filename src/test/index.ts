@@ -18,9 +18,13 @@ const tempFolderOverride = "somewhere/else";
 const devicesOverrideFile = join(sandboxRoot, "devices_override.json");
 const devicesOverride = { something: {} };
 const runtimesRoot = resolve("./runtimes");
-const modulesToDownload = process.env.TARGETPLATFORMS
-  ? process.env.TARGETPLATFORMS.split(",")
-  : ([] as ModuleAliases[]);
+try {
+  const modulesToDownload = process.env.TARGETPLATFORMS
+    ? process.env.TARGETPLATFORMS.split(",")
+    : ([] as ModuleAliases[]);}
+catch (errTargetPlatform) {
+  core.setFailed(`Action failed with error "Platforms split error"`)
+}
 const compileLocalSettingsOverrideFile =
   process.env.COMPILE_LOCAL_SETTINGS_OVERRIDE_FILE;
 const sampleYyp = join(sandboxRoot, "sample.yyp");
