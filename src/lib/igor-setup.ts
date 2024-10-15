@@ -159,7 +159,12 @@ export class IgorSetup {
 
     const licenseFile = fs.readFileSync(licenseFileDir, "utf-8");
     const licenseFileContent = plist.parse(licenseFile) as any;
-    const userName = licenseFileContent.name.split("@")[0];
+    try {
+      const userName = licenseFileContent.name.split("@")[0];
+    } catch (errLicenseFileSplit) {
+      core.setFailed(`Action failed with error "License split error"`)
+    }
+
     const id = licenseFileContent.id;
     this.userName = `${userName}_${id}`;
     const newUserDir = path.join(this.workingDir, "gm-user", this.userName);
@@ -400,13 +405,16 @@ export class IgorSetup {
   }
 
   private _getVersionParts(version: string) {
-    const versionParts = version.split(".");
-    return {
-      major: versionParts[0],
-      minor: versionParts[1],
-      patch: versionParts[2],
-      revision: versionParts[3],
-    };
+    try {
+      const versionParts = version.split(".");
+      return {
+        major: versionParts[0],
+        minor: versionParts[1],
+        patch: versionParts[2],
+        revision: versionParts[3],
+      };} catch (errVersionParts) {
+          core.setFailed(`Action failed with error "Version split error"`)
+      }
   }
 
   private checkFfmpeg() {

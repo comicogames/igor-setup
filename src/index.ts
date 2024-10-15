@@ -20,9 +20,13 @@ export async function run() {
       "local-settings-override-file"
     );
     const devicesOverrideFile = core.getInput("devices-settings-override-file");
+    try {
     const targetModules = core.getInput("modules")
       ? core.getInput("modules").split(",")
       : undefined;
+    } catch (errTargetModules) {
+      core.setFailed(`Action failed with error "Modules split error"`)
+    }
 
     const igorSetup = new IgorSetup(
       accessKey,
